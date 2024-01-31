@@ -14,7 +14,7 @@ cp ../requirements.txt $BUILD_DIR
 
 gcloud run deploy server --project $PROJECT  --region=$REGION --allow-unauthenticated \
     --update-secrets=OPENAI_API_KEY=OPENAI_API_KEY:latest \
-    --set-env-vars "MODEL=gpt-3.5-turbo" \
+    --set-env-vars "OPENAI_MODEL=gpt-3.5-turbo" \
     --source=$BUILD_DIR \
 
 rm -fr $BUILD_DIR
