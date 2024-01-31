@@ -3,19 +3,18 @@
 REGION=australia-southeast1
 PROJECT=anz-ml-engineer
 PROJECT_ID=977770941525
-SOURCE_DIR="."
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
-    --member=serviceAccount:${PROJECT_ID}-compute@developer.gserviceaccount.com \
-    --role=roles/secretmanager.secretAccessor \
+BUILD_DIR="../server_build"
+rm -fr $BUILD_DIR
+mkdir $BUILD_DIR
 
-gcloud secrets add-iam-policy-binding OPENAI_API_KEY \
-    --member="serviceAccount:${PROJECT_ID}-compute@developer.gserviceaccount.com \
-    --role="roles/secretmanager.secretAccessor"
+cp -r * $BUILD_DIR
+cp ../requirements.txt $BUILD_DIR
 
 
-gcloud run deploy data_insight --project $PROJECT  --region=$REGION --allow-unauthenticated \
+gcloud run deploy server --project $PROJECT  --region=$REGION --allow-unauthenticated \
     --update-secrets=OPENAI_API_KEY=OPENAI_API_KEY:latest \
     --set-env-vars "MODEL=gpt-3.5-turbo" \
-    --source=$SOURCE_DIR \
+    --source=$BUILD_DIR \
 
+rm -fr $BUILD_DIR
