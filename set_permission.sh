@@ -8,5 +8,5 @@ gcloud projects add-iam-policy-binding ${PROJECT} \
     --role=roles/secretmanager.secretAccessor \
 
 gcloud secrets add-iam-policy-binding OPENAI_API_KEY \
-    --member="serviceAccount:${PROJECT_ID}-compute@developer.gserviceaccount.com \
+    --member=serviceAccount:${PROJECT_ID}-compute@developer.gserviceaccount.com \
     --role="roles/secretmanager.secretAccessor"
