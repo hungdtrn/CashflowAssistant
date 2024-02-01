@@ -2,6 +2,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains.llm import LLMChain
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
+from .base import AgentBase
 
 def get_tool_info_str(tools):
     str_list = []
@@ -16,10 +17,11 @@ class CustomStructure(BaseModel):
 
 # Set up a parser + inject instructions into the prompt template.
 
-def create_agent(llm, **kwargs):
-    def run(inp_dict, verbose=False):
-        prompt_template = """You are an AI Assistant, your task is to answer general questions of the user about the system.
-        Here is the list of tools that the system have: 
+class GeneralAgent(AgentBase):
+    def __init__(self, llm, **kwargs) -> None:
+        super().__init__()
+
+        prompt_template = """You are an AI Assistant. Your task is to answer general questions from the user about the system. The system contains tools that the user can use to gain insight into their cash flow. The system has access to the user’s cash flow data. Below is the list of tools available in the system: 
         {tools}
 
         {input}"""
@@ -30,8 +32,10 @@ def create_agent(llm, **kwargs):
         partial_prompt = prompt.partial(tools=get_tool_info_str(kwargs["tool_infos"]))
 
 
-        qa = LLMChain(llm=llm, prompt=partial_prompt)
+        self.chain = LLMChain(llm=llm, prompt=partial_prompt)
 
-        return qa.invoke(inp_dict)["text"]
+    def run(self, question, **kwargs):
+        return self.chain.invoke(question)["text"]
 
-    return run
+def create_agent(llm, **kwargs):
+    return GeneralAgent(llm, **kwargs)

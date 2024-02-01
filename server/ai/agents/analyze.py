@@ -86,9 +86,5 @@ class SQLAgentAnalyze(SQLAgentBase):
     def __init__(self, llm, userID, **kwargs) -> None:
         super().__init__(llm, userID, **kwargs)
 
-def create_agent_sql(llm, **kwargs):
-    analyzer = SQLAgentAnalyze(llm, **kwargs)
-    def run(inp_dict, verbose=False):
-        return analyzer.run(inp_dict, verbose=verbose)
-    
-    return run
+def create_agent(llm, **kwargs):
+    return SQLAgentAnalyze(llm, **kwargs)

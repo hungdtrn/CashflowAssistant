@@ -40,15 +40,20 @@ from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain_core.output_parsers import BaseOutputParser, StrOutputParser
 import ast
 
-class SQLAgentBase:
+class AgentBase:
+    def run(self, inp, **kwargs):
+        pass 
+
+class SQLAgentBase(AgentBase):
     PROMPT_SUFFIX = """Only use the following tables:
 {table_info}
 
 Question: {input}"""
 
     PROMPT_PREFIX = """You are a SQLite expert. Given an input question, first create a syntactically correct SQLite query to run, then look at the results of the query and return the answer to the input question.
-Unless the user specifies in the question a specific number of examples to obtain, query for at most {top_k} results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database. 
-Unless the user specifies by the users, return the SUM of the values in the column using the SUM clause.
+The data contain the cashflow of multiple stores. Unless the user specifies in the question, you must aggregate the data for all stores using the SUM clause as per SQLite.
+Unless the user specifies in the question a specific number of examples to obtain, query for at most {top_k} results using the LIMIT clause as per SQLite. You can order the results to return the most informative data in the database.
+Assign a name to the SUM, AVG, COUNT, or other aggregate functions of the values in the column using the AS clause.
 Never query for all columns from a table. You must query only the columns that are needed to answer the question. Wrap each column name in double quotes (") to denote them as delimited identifiers.
 You must include the Client_ID in the query. The Client_ID is a unique identifier for each user in the database. It is set to {userID} for the current user.
 Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
@@ -62,8 +67,11 @@ SQLResult: Result of the SQLQuery
 Answer: Final answer here"""
 
     EXAMPLES = [{
-            "input": "How many stores do I have?",
-            "query": "SELECT COUNT(DISTINCT 'Store_ID') FROM data WHERE AND Client_ID = {userID}"
+            "input": "Last month's income data for the user",
+            "query": 'SELECT "Date", SUM("Revenue") as  "Total Revenue" FROM data WHERE "Date" >= date("now", "-1 month") AND "Date" <= date("now") AND Client_ID = {userID} GROUP BY "Date"' 
+        }, {
+            "input": "Last week's cashflow data for the user",
+            "query": 'SELECT "Date", SUM("Net_Cash_Flow") as  "Total Cash Flow" FROM data WHERE "Date" >= date("now", "-7 days") AND "Date" <= date("now") AND Client_ID = {userID} GROUP BY "Date"' 
         }]
 
     EXAMPLE_PROMPT = "User input: {input}\nSQL query: {query}"
@@ -98,14 +106,20 @@ Answer: Final answer here"""
 
     def check_question_validity(self, question):
         # check if the question contains sql injection
-        keywords = ["drop", "update", "insert", "create", "delete"]
+        keywords = ["drop", "update", "insert", "create", "delete", "select"]
         for keyword in keywords:
-            if keyword in question:
+            if keyword in question.lower():
                 return False
             
+    
         return True
 
     def check_query_validity(self, query: str, userID) -> bool:
+        keywords = ["drop", "update", "insert", "create", "delete"]
+        for keyword in keywords:
+            if keyword in query.lower():
+                return False
+
         # Count how many times Client_ID is used
         if query.count(f"Client_ID") > 1:
             return False
@@ -132,17 +146,13 @@ Answer: Final answer here"""
             return self.PERMISION_ERROR
         
         out_list = ast.literal_eval(text)
-
-        if len(out_list) == 1:
-            out_list = out_list[0]
             
         if out_list == "None" or out_list == 0 or out_list is None:
             return self.PERMISION_ERROR
 
         return out_list
     
-    def run(self, inp_dict, verbose=False):
-        question = inp_dict["input"]
+    def run(self, question, verbose=False, include_columns=True):
 
         # check if the question contains sql injection
         if not self.check_question_validity(question):
@@ -150,7 +160,8 @@ Answer: Final answer here"""
 
         # run the sql agent
         sql_query = self.sql_agent.invoke({
-            "question": inp_dict["input"]
+            "question": question,
+            "top_k": 100,
         })
 
         # check if the query is valid
@@ -160,4 +171,4 @@ Answer: Final answer here"""
         if verbose:
             print(sql_query)
 
-        return self.format_output(self.db.run(sql_query))
+        return self.format_output(self.db.run(sql_query, include_columns=include_columns))

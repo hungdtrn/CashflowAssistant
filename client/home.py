@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from utils import post
 import os
+import pandas as pd
 
 load_dotenv()
-st.title("Assistant")
+st.title("Cashflow Assistant")
 
 #building out chat history
 if "messages" not in st.session_state:
@@ -21,28 +22,38 @@ if "messages" not in st.session_state:
 def disable():
     st.session_state["disabled"] = True
 
+def display_output(role, response):
+    with st.chat_message(role):
+        if type(response) == str:
+            st.markdown(response)
+        elif type(response) == pd.DataFrame:
+            st.dataframe(response)
 
-userID = st.text_input('userID', None,
+userID = st.text_input('Please enter the ClientID', None,
                        disabled=st.session_state.disabled,
                        on_change=disable)
 checkbox_disabled = True # Disable the checkboxes by default
 if not userID:
     # Need to also put in a check for a valid userID
-    st.text("Enter user ID")
+    st.text("Enter client ID")
 else:
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+        display_output(message["role"], message["content"])
 
     prompt = st.chat_input("Type Message.......")
     if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
-        try:
-            st.chat_message("user").markdown(prompt)
-            output = post('chat', os.getenv('SERVER_URL'), {"userId": userID, "message": prompt})
-            st.session_state.messages.append({"role": "assistant", "content": output["response"]})
+        st.chat_message("user").markdown(prompt)
+        with st.spinner('Please wait...'):
+            output = post('chat', os.getenv('SERVER_URL'), {"userId": userID, "message": prompt})                
+        st.session_state.messages.append({"role": "assistant", "content": output})
+        display_output("assistant", output)
 
-            st.chat_message("assistant").markdown(output["response"])
-        except Exception as e:
-            st.text(e)
+        # try:
+        #     st.chat_message("user").markdown(prompt)
+        #     output = post('chat', os.getenv('SERVER_URL'), {"userId": userID, "message": prompt})                
+        #     st.session_state.messages.append({"role": "assistant", "content": output["response"]})
+        #     display_output("assistant", output)
+        # except Exception as e:
+        #     st.text(e)

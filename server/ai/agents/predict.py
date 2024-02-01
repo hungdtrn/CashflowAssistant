@@ -20,7 +20,7 @@ SQLQuery: SQL Query to run
 SQLResult: Result of the SQLQuery
 Answer: Final answer here"""
 
-    PERMISION_ERROR = "We cannot fulfill this request!"
+    PERMISION_ERROR = "We cannot do that at the moment. Please try again later!"
 
     EXAMPLES = [{
             "input": "How much will I spend next month?",
@@ -38,11 +38,14 @@ Answer: Final answer here"""
         out_list = super().format_output(text)
         if type(out_list) == str:
             return out_list
-                
+
         df = pd.DataFrame(out_list, columns =['Date', 'Out'])
         df["Date"] = pd.to_datetime(df["Date"])
         return df
     
+    def run(self, question, verbose=False, include_columns=True):
+        return super().run(question, verbose, include_columns=False)
+
 class HyperParamAgent:
     PREFIX = """You are an Coding Assistant, your task is to generate the hyperparameters for a forecasting function based on the question of the user. 
 The forecasting function is defined as
@@ -113,9 +116,9 @@ class ForecastAgent:
         self.query_agent = SQLTrainDataQuery(llm, userID, **kwargs)
         self.hyperparam_agent = HyperParamAgent(llm, userID, **kwargs)
 
-    def run(self, inp_dict, verbose=False):
-        df = self.query_agent.run(inp_dict, verbose=True)
-        hyperparams = self.hyperparam_agent.run(inp_dict, verbose=True)
+    def run(self, question, verbose=False, **kwargs):
+        df = self.query_agent.run(question, verbose=verbose)
+        hyperparams = self.hyperparam_agent.run(question, verbose=verbose)
                 
         return self.forecast(df, **hyperparams)
 
@@ -125,7 +128,6 @@ class ForecastAgent:
         
          # Group by date
         df = df.groupby(pd.Grouper(key="Date", freq=group_freq)).sum()
-
         mod = sm.tsa.SARIMAX(df, order=(1, 0, 0), trend='c')
         res = mod.fit()
 
@@ -135,7 +137,4 @@ class ForecastAgent:
 
 def create_agent(llm, **kwargs):
     forecaster = ForecastAgent(llm, **kwargs)
-    def run(inp_dict, verbose=False):
-        return forecaster.run(inp_dict, verbose=verbose)
-    
-    return run
+    return forecaster
