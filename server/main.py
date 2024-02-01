@@ -22,13 +22,14 @@ def get_or_create_session(userID):
 @app.route("/data", methods=["GET"])
 def data():
     userID = request.args.get("userID")
+    session = get_or_create_session(userID)
+    db = session["db"]
     query = "SELECT * FROM DATA WHERE DATE >= date('now', '-7 days')"
     if userID:
         query += " AND Client_ID = {}".format(userID)
 
     query += " ORDER BY DATE DESC"
 
-    db = connect_db()
     data = db.run(query, include_columns=True)
     return {
         "response": data

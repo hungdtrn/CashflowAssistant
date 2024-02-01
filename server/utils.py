@@ -16,8 +16,6 @@ def connect_db():
     """
     Connect to the database.
     """
-    print(os.path.join(data_path, "data.db"))
-    print("sqlite:///data.db")
     uri = "sqlite:///data.db"
     db = SQLDatabase.from_uri(uri)
     return db

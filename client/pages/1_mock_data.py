@@ -6,7 +6,7 @@ import datetime
 import streamlit_scrollable_textbox as stx
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from utils import post, get
+from utils import post, get, CACHE_TTL
 import os
 import pandas as pd
 import numpy as np
@@ -42,6 +42,11 @@ def display_dataframe_quickly(df, max_rows=50, **st_dataframe_kwargs):
         st.dataframe(df, **st_dataframe_kwargs)
         st.text('Displaying rows %i to %i of %i.' % (start_row, end_row - 1, n_rows))
 
+@st.cache_data(ttl=CACHE_TTL)
+def get_data(userID):
+    output = get('data', os.getenv('SERVER_URL'), {"userID": userID})
+    return output
+
 load_dotenv()
 st.title("Mock Data")
 st.markdown("This is a mock data page. The data here is the mock data used for the demo. The data is not real.")
@@ -51,5 +56,5 @@ if not userID:
     st.text("Enter client ID")
 else:
     # Display chat messages from history on app rerun
-    output = get('data', os.getenv('SERVER_URL'), {"userID": userID})                
+    output = get_data(userID)
     display_dataframe_quickly(output)

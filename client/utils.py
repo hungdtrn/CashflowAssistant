@@ -6,6 +6,10 @@ import pandas as pd
 import ast
 load_dotenv()
 
+CACHE_NUM_ENTRY = 1
+CACHE_TTL = 10
+
+
 def process_output(out: str):
     try:
         out = ast.literal_eval(str(out))
@@ -22,7 +26,6 @@ def process_output(out: str):
     except Exception as e:
         print("Error", e)
         pass
-    print(out)
     return out
 
 def post(path, server_url, obj, stream=False):
