@@ -6,7 +6,7 @@ import datetime
 import streamlit_scrollable_textbox as stx
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from utils import post, get
+from ..utils import post, get
 import os
 import pandas as pd
 import numpy as np
