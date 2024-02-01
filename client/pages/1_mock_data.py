@@ -11,20 +11,6 @@ import os
 import pandas as pd
 import numpy as np
 
-def get(path, server_url, obj):
-    param_str=""
-    for key in obj.keys():
-        param_str += f"{key}={obj[key]}&"
-        
-    response = requests.get(f"{server_url}/{path}?{param_str}")
-    if not response.ok:
-        print(response.text)
-        raise Exception(f"Invalid response: {response.text}")
-
-    out = json.loads(response.text)    
-    return process_output(out["response"])
-
-
 def display_dataframe_quickly(df, max_rows=50, **st_dataframe_kwargs):
     """Display a subset of a DataFrame or Numpy Array to speed up app renders.
     
