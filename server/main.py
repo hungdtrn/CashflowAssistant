@@ -50,7 +50,7 @@ def history():
 
 @app.route("/clear_history", methods=["POST"])
 def clear_history():
-    clear_history(request.json["userID"])
+    clear_session(request.json["userID"])
     return {
         "response": "Done"
     }
@@ -63,7 +63,7 @@ def chat():
     session = get_or_create_session(userId)
     session["history"].append({
         "role": "user",
-        "message": query
+        "content": query
     })
     ai = session["ai"]
     # output = get_result(query, db=db, userID=userId)
@@ -81,8 +81,8 @@ def chat():
 
     output = _fn(1)
     session["history"].append({
-        "role": "ai",
-        "message": output
+        "role": "assistant",
+        "content": output
     })
     return {
         "response": output

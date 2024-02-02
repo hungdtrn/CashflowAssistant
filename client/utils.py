@@ -65,4 +65,8 @@ def get(path, server_url, obj):
         raise Exception(f"Invalid response: {response.text}")
 
     out = json.loads(response.text)    
-    return process_output(out["response"])
+    return out["response"]
+
+def get_pd(path, server_url, obj):
+    out = get(path, server_url, obj)
+    return process_output(out)

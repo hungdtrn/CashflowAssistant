@@ -6,7 +6,7 @@ import datetime
 import streamlit_scrollable_textbox as stx
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from utils import post
+from utils import post, get, CACHE_TTL
 import os
 import pandas as pd
 
@@ -22,9 +22,21 @@ st.markdown("""
 
 #building out chat history
 if "messages" not in st.session_state:
+    st.session_state.userID = None
     st.session_state.messages = []
     st.session_state.disabled = False
+    st.session_state.history_loaded = False
 
+def get_history(userID):
+    output = get('history', os.getenv('SERVER_URL'), {"userID": userID})
+    st.session_state.messages = output
+
+def clear_history(userID):
+    st.session_state.messages = []
+    post('clear_history', os.getenv('SERVER_URL'), {"userID": userID})
+
+def switch_user():
+    st.rerun()
 
 def disable():
     st.session_state["disabled"] = True
@@ -36,14 +48,23 @@ def display_output(role, response):
         elif type(response) == pd.DataFrame:
             st.dataframe(response)
 
+
+
 userID = st.text_input('Please enter the ClientID', None,
                        disabled=st.session_state.disabled,
                        on_change=disable)
+
 checkbox_disabled = True # Disable the checkboxes by default
 if not userID:
     # Need to also put in a check for a valid userID
     st.text("Enter client ID")
 else:
+    st.sidebar.button("Clear Chat History", on_click=lambda: clear_history(st.session_state.userID))
+
+    if not st.session_state.history_loaded:
+        get_history(st.session_state.userID)
+        st.session_state.history_loaded = True
+
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
         display_output(message["role"], message["content"])
