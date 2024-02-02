@@ -38,6 +38,12 @@ def clear_history(userID):
     st.session_state.history_loaded = False
     post('clear_history', os.getenv('SERVER_URL'), {"userID": userID})
 
+def switch_user(userID):
+    st.session_state.userID = None
+    st.session_state.messages = []
+    st.session_state.disabled = False
+    st.session_state.history_loaded = False
+
 def disable():
     st.session_state.disabled = True
 
@@ -60,6 +66,7 @@ if not st.session_state.userID:
 
 else:
     st.sidebar.button("Clear session", on_click=lambda: clear_history(st.session_state.userID))
+    st.sidebar.button("Switch user", on_click=lambda: switch_user(st.session_state.userID))
 
     if not st.session_state.history_loaded:
         with st.spinner('Please wait...'):
