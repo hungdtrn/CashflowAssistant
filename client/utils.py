@@ -11,6 +11,17 @@ CACHE_TTL = 10
 
 
 def process_output(out: str):
+    # out = ast.literal_eval(str(out))
+    # if type(out) == list:
+    #     out = pd.DataFrame(out)
+    # elif type(out) == dict:
+    #     out = pd.DataFrame.from_dict(out, orient="index")
+
+    # for col in out.columns:
+    #     print(out[col].dtype)
+    #     if out[col].dtype == "float64":
+    #         out[col] = out[col].round(1)
+
     try:
         out = ast.literal_eval(str(out))
         if type(out) == list:
