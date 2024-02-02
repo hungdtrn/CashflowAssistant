@@ -43,9 +43,6 @@ Answer: Final answer here"""
     EXAMPLES = [{
             "input": "Last month's income data for the user",
             "query": 'SELECT "Date", SUM("Revenue") as  "Total Revenue" FROM data WHERE "Date" >= date("now", "-1 month") AND "Date" <= date("now") AND Client_ID = {userID} GROUP BY "Date"' 
-        }, {
-            "input": "Last week's cashflow data for the user",
-            "query": 'SELECT "Date", SUM("Net_Cash_Flow") as  "Total Cash Flow" FROM data WHERE "Date" >= date("now", "-7 days") AND "Date" <= date("now") AND Client_ID = {userID} GROUP BY "Date"' 
         }]
 
     EXAMPLE_PROMPT = "User input: {input}\nSQL query: {query}"
