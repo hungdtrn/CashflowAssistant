@@ -1,11 +1,7 @@
 import json
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 from uuid import UUID
 
-from prompt_toolkit import HTML, prompt
-from langchain.chains.router import MultiPromptChain
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferWindowMemory, ConversationBufferMemory
 from langchain.chains.llm import LLMChain
 from langchain.prompts import PromptTemplate
@@ -54,7 +50,7 @@ class AgentRouter(AgentBase):
 
     SUFFIX = """ Examples:
 Question: How much did I spend last week?
-Thought: How much did I spend last week?
+Thought: The user wants to know about their spending for last week.
 Action: data analysis
 Action Input: The last week spending of the user
 
@@ -68,6 +64,18 @@ Begin!
 {chat_history}
 Question: {input}
 {agent_scratchpad}"""
+
+    FORMAT_INSTRUCTIONS = """Use the following format:
+
+    Question: the input question you must answer
+    Thought: you should always think about what to do. If there are pronouns in the original input, you should think what the pronouns refer to and clarify them. 
+    Action: the action to take, should be one of [{tool_names}]
+    Action Input: the input to the action
+    Observation: the result of the action
+    ... (this Thought/Action/Action Input/Observation can repeat N times)
+    Thought: I now know the final answer
+    Final Answer: the final answer to the original input question"""
+
 
     def __init__(self, llm, **kwargs) -> None:
         super().__init__()
@@ -96,6 +104,7 @@ Question: {input}
             tools,
             prefix=self.PREFIX,
             suffix=self.SUFFIX,
+            format_instructions=self.FORMAT_INSTRUCTIONS,
             input_variables=["input", "chat_history", "agent_scratchpad"],
         )
         # memory = ConversationBufferMemory(memory_key="chat_history")
@@ -110,7 +119,9 @@ Question: {input}
 
 
     def run(self, inp, *kwargs):
-        out = self.agent.invoke(inp, config={"callbacks": [CallBackHandler()]})
+        # out = self.agent.invoke(inp, config={"callbacks": [CallBackHandler()]})
+        out = self.agent.invoke(inp)
+
         return self.format_output(out["output"])
 
     

@@ -15,12 +15,12 @@ def process_output(out: str):
         out = ast.literal_eval(str(out))
         if type(out) == list:
             out = pd.DataFrame(out)
-            out = out.drop("index", axis=1)
         elif type(out) == dict:
             out = pd.DataFrame.from_dict(out, orient="index")
 
         # check each col, round if col is number
         for col in out.columns:
+            print(out[col].dtype)
             if out[col].dtype == "float64":
                 out[col] = out[col].round(1)
     except Exception as e:

@@ -49,7 +49,7 @@ def get_data(userID):
 
 load_dotenv()
 st.title("Mock Data")
-st.markdown("This is a mock data page. The data here is the mock data used for the demo. The data is not real.")
+st.markdown("Explore mock data used for the demo. Note: This data is not real!. You can use this to test the chat functionality.")
 st.markdown("Please enter the ClientID")
 userID = st.text_input('ClientID', None)
 if not userID:
