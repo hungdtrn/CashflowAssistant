@@ -6,7 +6,7 @@ import datetime
 import streamlit_scrollable_textbox as stx
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from utils import post, get, CACHE_TTL
+from utils import post, get_history, CACHE_TTL
 import os
 import pandas as pd
 
@@ -27,8 +27,8 @@ if "messages" not in st.session_state:
     st.session_state.disabled = False
     st.session_state.history_loaded = False
 
-def get_history(userID):
-    output = get('history', os.getenv('SERVER_URL'), {"userID": userID})
+def _get_history(userID):
+    output = get_history('history', os.getenv('SERVER_URL'), {"userID": userID})
     st.session_state.messages = output
 
 def clear_history(userID):
@@ -65,7 +65,7 @@ else:
 
     if not st.session_state.history_loaded:
         with st.spinner('Please wait...'):
-            get_history(st.session_state.userID)
+            _get_history(st.session_state.userID)
         st.session_state.history_loaded = True
 
     # Display chat messages from history on app rerun

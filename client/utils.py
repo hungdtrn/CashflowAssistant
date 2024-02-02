@@ -70,3 +70,10 @@ def get(path, server_url, obj):
 def get_pd(path, server_url, obj):
     out = get(path, server_url, obj)
     return process_output(out)
+
+def get_history(path, server_url, obj):
+    output = get(path, server_url, obj)
+    for conv in output:
+        conv["content"] = process_output(conv["content"])
+    
+    return output
