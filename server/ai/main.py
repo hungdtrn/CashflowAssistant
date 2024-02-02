@@ -5,8 +5,8 @@ from langchain.chat_models import ChatOpenAI
 dotenv.load_dotenv()
 from .agents import create_router_agent, create_analyze_agent, create_predict_agent, mapping, propmt_infos
 
-def create_model():
-    return ChatOpenAI(model=os.environ["OPENAI_MODEL"])
+def create_model(**kwargs):
+    return ChatOpenAI(model=os.environ["OPENAI_MODEL"], **kwargs)
 
 class AIApplication:
     def __init__(self, **kwargs) -> None:

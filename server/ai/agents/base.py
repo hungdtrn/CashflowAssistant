@@ -125,7 +125,7 @@ Answer: Final answer here"""
         
         out_list = ast.literal_eval(text)
             
-        if out_list == "None" or out_list == 0 or out_list is None:
+        if out_list == "None" or out_list == 0 or out_list is None or len(out_list) == 1 and list(out_list[0].values())[0] is None:
             return self.PERMISION_ERROR
 
         return out_list

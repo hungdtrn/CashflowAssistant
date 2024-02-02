@@ -85,16 +85,6 @@ Question: {input}
     def __init__(self, llm, **kwargs) -> None:
         super().__init__()
 
-        destinations = [f"{p['name']}: {p['description']}" for p in prompt_infos]
-        destinations_str = '\n'.join(destinations)
-        router_template = MULTI_PROMPT_ROUTER_TEMPLATE.format(destinations=destinations_str)
-        router_prompt = PromptTemplate(
-            template=router_template,
-            input_variables=['input', 'history'],
-            output_parser=RouterOutputParser()
-        )
-
-        router_chain = LLMRouterChain.from_llm(llm, router_prompt)
         tools = []
         for infs in prompt_infos:
             tool = StructuredTool.from_function(router_fn(infs["name"]),
@@ -118,6 +108,7 @@ Question: {input}
         llm_chain = LLMChain(llm=llm, prompt=agent_prompt)
         agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
         self.agent = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory)
+        self.agent.handle_parsing_errors=True
 
     def format_output(self, text: str) -> dict:
         return json.loads(text)

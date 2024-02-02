@@ -15,9 +15,14 @@ def get_or_create_session(userID):
         sessions[userID] = {
             "db": db,
             "userID": userID,
-            "ai": AIApplication(db=db, userID=userID)
+            "ai": AIApplication(db=db, userID=userID),
+            "history": [],
         }
     return sessions[userID]
+
+def clear_session(userID):
+    if userID in sessions:
+        del sessions[userID]
 
 @app.route("/data", methods=["GET"])
 def data():
@@ -35,12 +40,31 @@ def data():
         "response": data
     }
 
+@app.route("/history", methods=["GET"])
+def history():
+    userID = request.args.get("userID")
+    session = get_or_create_session(userID)
+    return {
+        "response": session["history"]
+    }
+
+@app.route("/clear_history", methods=["POST"])
+def clear_history():
+    clear_history(request.json["userID"])
+    return {
+        "response": "Done"
+    }
+
 @app.route("/chat", methods=["POST"])
 def chat():
     userId = request.json["userId"]
     query = request.json["message"]
 
     session = get_or_create_session(userId)
+    session["history"].append({
+        "role": "user",
+        "message": query
+    })
     ai = session["ai"]
     # output = get_result(query, db=db, userID=userId)
     def _fn(retries):
@@ -56,6 +80,10 @@ def chat():
         return output
 
     output = _fn(1)
+    session["history"].append({
+        "role": "ai",
+        "message": output
+    })
     return {
         "response": output
     }
