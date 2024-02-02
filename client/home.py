@@ -59,11 +59,11 @@ if not userID:
     # Need to also put in a check for a valid userID
     st.text("Enter client ID")
 else:
-    st.sidebar.button("Clear Chat History", on_click=lambda: clear_history(st.session_state.userID))
+    st.sidebar.button("Clear Chat History", on_click=lambda: clear_history(userID))
 
     if not st.session_state.history_loaded:
         with st.spinner('Please wait...'):
-            get_history(st.session_state.userID)
+            get_history(userID)
         st.session_state.history_loaded = True
 
     # Display chat messages from history on app rerun
