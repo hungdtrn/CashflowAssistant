@@ -6,7 +6,7 @@ import datetime
 import streamlit_scrollable_textbox as stx
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
-from utils import post, get, CACHE_TTL
+from utils import post, get_pd, CACHE_TTL
 import os
 import pandas as pd
 import numpy as np
@@ -44,7 +44,7 @@ def display_dataframe_quickly(df, max_rows=50, **st_dataframe_kwargs):
 
 @st.cache_data(ttl=CACHE_TTL)
 def get_data(userID):
-    output = get('data', os.getenv('SERVER_URL'), {"userID": userID})
+    output = get_pd('data', os.getenv('SERVER_URL'), {"userID": userID})
     return output
 
 load_dotenv()
