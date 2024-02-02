@@ -59,6 +59,11 @@ Thought: The user want to know about the capabilities of the system. I should fo
 Action: general chat
 Action Input: What can you help me with?
 
+Question: Hi!
+Thought: The user is greeting. I should forward it to the QA tool.
+Action: general chat
+Action Input: Hi!
+
 Begin!
 
 {chat_history}
