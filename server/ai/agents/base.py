@@ -41,8 +41,15 @@ SQLResult: Result of the SQLQuery
 Answer: Final answer here"""
 
     EXAMPLES = [{
-            "input": "Last month's income data for the user",
-            "query": 'SELECT "Date", SUM("Revenue") as  "Total Revenue" FROM data WHERE "Date" >= date("now", "-1 month") AND "Date" <= date("now") AND Client_ID = {userID} GROUP BY "Date"' 
+            "input": "Last week's income data for the user",
+            "query": 'SELECT "Date", SUM("Revenue") as  "Total Revenue" FROM data WHERE "Date" >= date("now", "-7 days") AND "Date" <= date("now") AND Client_ID = {userID} GROUP BY "Date"' 
+        }, {
+            "input": "The spending at Coles last two week",
+            "query": 'SELECT "Date", SUM("Expenses") as "Total Expenses" FROM data WHERE "Date" >= date("now", "-14 days") AND "Date" <= date("now") AND "Company" = "Coles" AND "Client_ID" = {userID} GROUP BY "Date"',
+        },
+        {
+            "input": "The cashflow for each week of last month of the user.",
+            "query": 'SELECT strftime("%W", "Date") as "Week",SUM("Revenue") as "Total Revenue", SUM("Expenses") as "Total Expenses", SUM("Revenue") - SUM("Expenses") as "Net Cashflow" FROM data WHERE "Date" >= date("now", "-1 month") AND "Date" <= date("now") AND "Client_ID" = 1 GROUP BY "Week" ORDER BY "Week"' 
         }]
 
     EXAMPLE_PROMPT = "User input: {input}\nSQL query: {query}"

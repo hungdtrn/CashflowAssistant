@@ -137,6 +137,9 @@ class ForecastAgent:
 
         pred = res.forecast(forecast_period)
         pred.index = pred.index.strftime('%Y-%m-%d')
+        pred.name = "Forecasted"
+
+        pred = pd.DataFrame(pred, columns=["Forecasted"]).T
         return pred.to_dict()
 
 def create_agent(llm, **kwargs):
