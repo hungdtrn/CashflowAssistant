@@ -23,13 +23,17 @@ Answer: Final answer here"""
     PERMISION_ERROR = "We cannot do that at the moment. Please try again later!"
 
     EXAMPLES = [{
-            "input": "How much will I spend next month?",
-            "thought": "Need to query the expense data of each store each month",
-            "query": "SELECT DATE, SUM(Expenses) FROM data WHERE Client_ID = {userID} GROUP BY Date"
+            "input": "How much will I spend next day?",
+            "thought": "Need to query the expense data of each date",
+            "query": 'SELECT "DATE", SUM("Expenses") FROM data WHERE "Client_ID" = {userID} GROUP BY "Date"'
         }, {
-            "input": "How will my cash flow look like in the next two months?",
-            "thought": "Need to query the cash flow data of each store each month",
-            "query": "SELECT DATE, SUM(Net_Cash_Flow) FROM data WHERE Client_ID = {userID} GROUP BY Date"
+            "input": "How will my cash flow at Coles look like in the next two months?",
+            "thought": "Need to query the expense data of each date",
+            "query": 'SELECT "DATE", SUM("Revenue" - "Expenses") FROM data WHERE "Client_ID" = {userID} AND "Company" = "Coles" GROUP BY "Date"'
+        }, {
+            "input": "How will my average revenue look like in the next two year?",
+            "thought": "Need to query the expense data of each date",
+            "query": 'SELECT "DATE", AVG("Revenue") FROM data WHERE "Client_ID" = {userID} GROUP BY "Date"'
         }]
     
     EXAMPLE_PROMPT = "Question: {input}\nThought: {thought}\nSQLQuery: {query}"
