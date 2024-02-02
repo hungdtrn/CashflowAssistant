@@ -35,7 +35,6 @@ def process_output(out: str):
             if out[col].dtype == "float64":
                 out[col] = out[col].round(1)
     except Exception as e:
-        print("Error", e)
         pass
     return out
 

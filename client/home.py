@@ -21,7 +21,7 @@ st.markdown("""
 """)
 
 #building out chat history
-if "messages" not in st.session_state:
+if "userID" not in st.session_state:
     st.session_state.userID = None
     st.session_state.messages = []
     st.session_state.disabled = False
@@ -47,8 +47,6 @@ def display_output(role, response):
             st.markdown(response)
         elif type(response) == pd.DataFrame:
             st.dataframe(response)
-
-
 
 st.text_input('Please enter the ClientID', None, 
               disabled=st.session_state.disabled,
