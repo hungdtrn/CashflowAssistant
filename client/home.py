@@ -32,14 +32,14 @@ def get_history(userID):
     st.session_state.messages = output
 
 def clear_history(userID):
+    st.session_state.userID = None
     st.session_state.messages = []
+    st.session_state.disabled = False
+    st.session_state.history_loaded = False
     post('clear_history', os.getenv('SERVER_URL'), {"userID": userID})
 
-def switch_user():
-    st.rerun()
-
 def disable():
-    st.session_state["disabled"] = True
+    st.session_state.disabled = True
 
 def display_output(role, response):
     with st.chat_message(role):
@@ -50,20 +50,22 @@ def display_output(role, response):
 
 
 
-userID = st.text_input('Please enter the ClientID', None,
-                       disabled=st.session_state.disabled,
-                       on_change=disable)
+st.text_input('Please enter the ClientID', None, 
+              disabled=st.session_state.disabled,
+              key="userID",
+              on_change=disable)
 
-checkbox_disabled = True # Disable the checkboxes by default
-if not userID:
+if not st.session_state.userID:
     # Need to also put in a check for a valid userID
     st.text("Enter client ID")
+    st.session_state.disabled = False
+
 else:
-    st.sidebar.button("Clear Chat History", on_click=lambda: clear_history(userID))
+    st.sidebar.button("Clear session", on_click=lambda: clear_history(st.session_state.userID))
 
     if not st.session_state.history_loaded:
         with st.spinner('Please wait...'):
-            get_history(userID)
+            get_history(st.session_state.userID)
         st.session_state.history_loaded = True
 
     # Display chat messages from history on app rerun
@@ -75,6 +77,6 @@ else:
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user").markdown(prompt)
         with st.spinner('Please wait...'):
-            output = post('chat', os.getenv('SERVER_URL'), {"userId": userID, "message": prompt})                
+            output = post('chat', os.getenv('SERVER_URL'), {"userId": st.session_state.userID, "message": prompt})                
         st.session_state.messages.append({"role": "assistant", "content": output})
         display_output("assistant", output)
