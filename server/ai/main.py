@@ -22,11 +22,11 @@ class AIApplication:
 
         def _fn(retries):
             # next_agent = self.agents[next_agent_dict["destination"]]
-            # out = next_agent.run(next_agent_dict["next_inputs"], verbose=True)
+            # out = next_agent.run(next_agent_dict["next_inputs"], verbose=os.environ.get("VERBOSE", False))
             # return out
             try:
                 next_agent = self.agents[next_agent_dict["destination"]]
-                out = next_agent.run(next_agent_dict["next_inputs"], verbose=True)
+                out = next_agent.run(next_agent_dict["next_inputs"], verbose=os.environ.get("VERBOSE", False))
                 return out
             except Exception as e:
                 print("Error: ", e)

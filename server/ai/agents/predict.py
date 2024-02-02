@@ -1,10 +1,14 @@
 import json
+import warnings
+
 import pandas as pd
 import statsmodels.api as sm
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 
 from .base import SQLAgentBase
+
+warnings.filterwarnings("ignore")
 
 class SQLTrainDataQuery(SQLAgentBase):
     PROMPT_PREFIX = """You are a SQLite expert {top_k}. Given an input predictive question, you need to create a syntactically correct SQLite query to run to get the appropriate data for training a predictive model to answer the question. Ignore the date time in the query, your query should collect all data of all date and time and group the data by date. Avoid using the LIMIT clause. 
@@ -133,7 +137,7 @@ class ForecastAgent:
          # Group by date
         df = df.groupby(pd.Grouper(key="Date", freq=group_freq)).sum()
         mod = sm.tsa.SARIMAX(df, order=(1, 0, 0), trend='c')
-        res = mod.fit()
+        res = mod.fit(disp=False)
 
         pred = res.forecast(forecast_period)
         pred.index = pred.index.strftime('%Y-%m-%d')

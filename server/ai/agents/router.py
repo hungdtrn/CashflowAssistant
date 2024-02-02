@@ -1,6 +1,10 @@
 import json
+import os
 from typing import Any, Dict, List
 from uuid import UUID
+import dotenv
+
+dotenv.load_dotenv()
 
 from langchain.memory import ConversationBufferWindowMemory, ConversationBufferMemory
 from langchain.chains.llm import LLMChain
@@ -106,8 +110,9 @@ Question: {input}
         memory = ConversationBufferWindowMemory(memory_key="chat_history", k=10)
 
         llm_chain = LLMChain(llm=llm, prompt=agent_prompt)
-        agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=True)
-        self.agent = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=True, memory=memory)
+        agent = ZeroShotAgent(llm_chain=llm_chain, tools=tools, verbose=os.environ.get("VERBOSE", False))
+        self.agent = AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=os.environ.get("VERBOSE", False), memory=memory,
+                                                        stop=["Question:"])
         self.agent.handle_parsing_errors=True
 
     def format_output(self, text: str) -> dict:
