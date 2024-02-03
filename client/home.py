@@ -32,10 +32,7 @@ def _get_history(userID):
     st.session_state.messages = output
 
 def clear_history(userID):
-    st.session_state.userID = None
     st.session_state.messages = []
-    st.session_state.disabled = False
-    st.session_state.history_loaded = False
     post('clear_history', os.getenv('SERVER_URL'), {"userID": userID})
 
 def switch_user(userID):

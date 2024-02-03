@@ -46,6 +46,7 @@ class RouterSchema(BaseModel):
 
 def router_fn(name):
     def run(query):
+        query = query.split("Question:")[0]
         return json.dumps({"destination": name, "next_inputs": query})
     return run
 
