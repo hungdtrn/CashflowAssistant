@@ -62,13 +62,14 @@ if not st.session_state.userID:
     st.session_state.disabled = False
 
 else:
-    st.sidebar.button("Clear session", on_click=lambda: clear_history(st.session_state.userID))
-    st.sidebar.button("Switch client", on_click=lambda: switch_user(st.session_state.userID))
 
     if not st.session_state.history_loaded:
         with st.spinner('Please wait...'):
             _get_history(st.session_state.userID)
         st.session_state.history_loaded = True
+
+    st.sidebar.button("Clear session", on_click=lambda: clear_history(st.session_state.userID))
+    st.sidebar.button("Switch client", on_click=lambda: switch_user(st.session_state.userID))
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
