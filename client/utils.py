@@ -33,7 +33,7 @@ def process_output(out: str):
         for col in out.columns:
             print(out[col].dtype)
             if out[col].dtype == "float64":
-                out[col] = out[col].round(1)
+                out[col] = out[col].round(0)
     except Exception as e:
         pass
     return out
