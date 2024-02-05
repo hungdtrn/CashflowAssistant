@@ -14,6 +14,8 @@ from langchain.chains import create_sql_query_chain
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 import ast
 
+from .utils import CallBackHandler
+
 class AgentBase:
     def run(self, inp, **kwargs):
         pass 
@@ -137,10 +139,14 @@ Answer: Final answer here"""
             return self.PERMISION_ERROR
 
         # run the sql agent
+        config = {}
+        if verbose:
+            config={"callbacks": [CallBackHandler()]}
+        
         sql_query = self.sql_agent.invoke({
             "question": question,
             "top_k": 100,
-        })
+        }, config=config)
 
         # check if the query is valid
         if not self.check_query_validity(sql_query, self.userID):

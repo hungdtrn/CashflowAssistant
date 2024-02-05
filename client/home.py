@@ -18,6 +18,11 @@ st.markdown("""
  * For the demo, you can use the following client IDs: 1, 2. Client with ID 1 has the cashflow data of Coles and Woolworths. Client with ID 2 has the cashflow data of Kmart and Aldi.
  * The data are not real and are used for the demo only. They are stored on one single table for simplicity. Please visit [mock data](/mock_data) to explore the mock data.
  * The components of this product are explained in the slide [here](https://docs.google.com/presentation/d/14ksVlbg3tV1rETHpiqgD1U41WMcqrPBvExYm-WMfSF4/edit?usp=sharing).
+ * Here are a few questions that you might want to ask the assistant:
+    * How much income did I get last month?        
+    * How much did I spend in Apr-2023?
+    * How will my cashflow look like in the next three months?
+    * What can you help me with?
 """)
 
 #building out chat history

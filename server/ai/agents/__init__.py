@@ -1,5 +1,5 @@
-from .router import create_agent as create_router_agent
-from .router import prompt_infos as propmt_infos
+from .switch import create_agent as create_switch_agent
+from .switch import prompt_infos as propmt_infos
 from .analyze import create_agent as create_analyze_agent
 from .general import create_agent as create_general_agent
 from .predict import create_agent as create_predict_agent

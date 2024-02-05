@@ -7,6 +7,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate, FewShotPromptTemplate
 
 from .base import SQLAgentBase
+from .utils import CallBackHandler
 
 warnings.filterwarnings("ignore")
 
@@ -112,7 +113,10 @@ Answer: Final answer is a json with the format: {{"group_freq": GROUP_STR, "fore
         return prompt
 
     def run(self, inp_dict, verbose=False):
-        out = self.chain.invoke(inp_dict)
+        config = {}
+        if verbose:
+            config={"callbacks": [CallBackHandler()]}
+        out = self.chain.invoke(inp_dict, config=config)
         out = json.loads(out["text"].split("Answer:")[-1])
         if verbose:
             print(out)
