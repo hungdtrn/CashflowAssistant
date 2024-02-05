@@ -21,7 +21,7 @@ There are two clients in this mock database. Client 1 and Client 2. Client 1 has
 
 
 ## System Architecture Overview
- ![System Diagram](resources/overall_diagram.png)
+ ![System Diagram](resources/overall_diagram.jpg)
 
 ## Core Functionalities of the System
 - QA Module: Answer general queries abou the system

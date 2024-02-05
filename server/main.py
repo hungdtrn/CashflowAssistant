@@ -66,9 +66,8 @@ def chat():
         "content": query
     })
     ai = session["ai"]
-    # output = get_result(query, db=db, userID=userId)
+
     def _fn(retries):
-        # output = ai.run(query)
         try:
             output = ai.run(query)
         except Exception as e:

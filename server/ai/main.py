@@ -21,9 +21,6 @@ class AIApplication:
         print("next_agent_dict", next_agent_dict)
 
         def _fn(retries):
-            # next_agent = self.agents[next_agent_dict["destination"]]
-            # out = next_agent.run(next_agent_dict["next_inputs"], verbose=os.environ.get("VERBOSE", False))
-            # return out
             try:
                 next_agent = self.agents[next_agent_dict["destination"]]
                 out = next_agent.run(next_agent_dict["next_inputs"], verbose=os.environ.get("VERBOSE", False))
