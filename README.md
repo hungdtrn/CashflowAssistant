@@ -1,6 +1,9 @@
 # Cash Flow Assistant
 Requirement: Building a system to provide insights and information to external users in a natural language conversation format. The context revolves around querying numerical information as we have a table T containing the cashflow data for some clients.
 
+The system can be is accessible via [this](https://cashflowaiassistant.streamlit.app/) website. 
+
+
 [For developer technical development click here](README_developer.md)
 
 ## About the data
