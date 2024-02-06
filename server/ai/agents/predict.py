@@ -134,15 +134,34 @@ class ForecastAgent:
                 
         return self.forecast(df, **hyperparams)
 
-    def forecast(self, df, group_freq: str, forecast_period: int):
+    def preprocess(self, df, group_freq):
+         # Group by date
+        df = df.groupby(pd.Grouper(key="Date", freq=group_freq)).sum()
+        return df
+
+    def forecast(self, df: pd.DataFrame, group_freq: str, forecast_period: int):
+        """ Forecast the future cash flow data based on the controlling paramaters
+
+        Args:
+            df (pd.DataFrame): The past data for computing the statistics.
+            group_freq (str): The parameter controlling how the data is processed.
+            forecast_period (int): The parameter controlling the forecasting period.
+
+        Returns:
+            pred (dict): the forecasted cash flow data.
+        """
+        # If found data error -> return the error
         if type(df) == str:
             return df
         
-         # Group by date
-        df = df.groupby(pd.Grouper(key="Date", freq=group_freq)).sum()
+        # Prerocess the data
+        df = self.preprocess(df, group_freq=group_freq)
+
+        # Fit a forecasting model
         mod = sm.tsa.SARIMAX(df, order=(1, 0, 0), trend='c')
         res = mod.fit(disp=False)
 
+        # Forecast the future data
         pred = res.forecast(forecast_period)
         pred.index = pred.index.strftime('%Y-%m-%d')
         pred.name = "Forecasted"
