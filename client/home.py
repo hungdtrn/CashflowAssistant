@@ -17,7 +17,7 @@ st.markdown("""
  * This is a cashflow assistant that can help you with your cashflow related questions.
  * For the demo, you can use the following client IDs: 1, 2. Client with ID 1 has the cashflow data of Coles and Woolworths. Client with ID 2 has the cashflow data of Kmart and Aldi.
  * The data are not real and are used for the demo only. They are stored on one single table for simplicity. Please visit [mock data](/mock_data) to explore the mock data.
- * The components of this product are explained in the slide [here](https://docs.google.com/presentation/d/14ksVlbg3tV1rETHpiqgD1U41WMcqrPBvExYm-WMfSF4/edit?usp=sharing).
+ * The components of this product are explained in the slide [here](https://www.dropbox.com/scl/fi/88tvx5g10qvo6wbljgm72/CashFlowAssistant.pptx?rlkey=t67f0gysoy08rfhik0wewr4ao&dl=0).
  * Here are a few questions that you might want to ask the assistant:
     * What can you help me with?
     * How much income did I get last month?        
