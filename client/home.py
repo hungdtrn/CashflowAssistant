@@ -24,6 +24,7 @@ st.markdown("""
     * How much income did I get last month?        
     * How much did I spend in Apr-2023?
     * How will my cashflow look like in the next three months?
+    * Visualizae my cashflow last month
 """)
 
 #building out chat history
