@@ -20,20 +20,15 @@ class AIApplication:
         next_agent_dict = self.switch_agent.run(query, verbose=os.environ.get("VERBOSE", False))
         print("next_agent_dict", next_agent_dict)
 
-
-        next_agent = self.agents[next_agent_dict["destination"]]
-        out = next_agent.run(next_agent_dict["next_inputs"], verbose=os.environ.get("VERBOSE", False))
-        return out
-
-        # def _fn(retries):
-        #     try:
-        #         next_agent = self.agents[next_agent_dict["destination"]]
-        #         out = next_agent.run(next_agent_dict["next_inputs"], verbose=os.environ.get("VERBOSE", False))
-        #         return out
-        #     except Exception as e:
-        #         print("Error: ", e)
-        #         if retries:
-        #             return _fn(retries-1)
-        #         else:
-        #             return "We encounter an error, please try again later."
-        # return _fn(retires)
+        def _fn(retries):
+            try:
+                next_agent = self.agents[next_agent_dict["destination"]]
+                out = next_agent.run(next_agent_dict["next_inputs"], verbose=os.environ.get("VERBOSE", False))
+                return out
+            except Exception as e:
+                print("Error: ", e)
+                if retries:
+                    return _fn(retries-1)
+                else:
+                    return "We encounter an error, please try again later."
+        return _fn(retires)
