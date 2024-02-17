@@ -16,6 +16,7 @@ import ast
 
 from .utils import CallBackHandler
 
+PERMISSION_ERROR = "No results found or you may not have the right permission for this query"
 class AgentBase:
     def run(self, inp, **kwargs):
         pass 
@@ -55,7 +56,7 @@ Answer: Final answer here"""
         }]
 
     EXAMPLE_PROMPT = "User input: {input}\nSQL query: {query}"
-    PERMISION_ERROR="No results found or you may not have the right permission for this query"
+    PERMISION_ERROR=PERMISSION_ERROR
 
     def __init__(self, llm, userID, **kwargs) -> None:
         self.userID = userID

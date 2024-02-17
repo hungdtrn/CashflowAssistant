@@ -1,4 +1,4 @@
-from .base import SQLAgentBase
+from .base import SQLAgentBase, PERMISSION_ERROR
 
 class SQLAgentAnalyze(SQLAgentBase):
     def __init__(self, llm, userID, **kwargs) -> None:

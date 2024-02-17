@@ -4,6 +4,7 @@ from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain.memory import ConversationBufferWindowMemory
 
 from .base import AgentBase
+from .utils import CallBackHandler
 
 def get_tool_info_str(tools):
     str_list = []
@@ -38,8 +39,12 @@ class GeneralAgent(AgentBase):
         self.chain = LLMChain(llm=llm, prompt=partial_prompt,
                               memory=memory,)
 
-    def run(self, question, **kwargs):
-        return self.chain.invoke(question,)["text"]
+    def run(self, question, verbose=False, **kwargs):
+        config = {}
+        if verbose:
+            config={"callbacks": [CallBackHandler()]}
+
+        return self.chain.invoke(question, config=config)["text"]
 
 def create_agent(llm, **kwargs):
     return GeneralAgent(llm, **kwargs)

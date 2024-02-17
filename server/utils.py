@@ -12,11 +12,15 @@ def query_data(userID):
     data = data[data['Client_ID'] == int(userID)]
     return data
 
-def connect_db():
+def connect_db(stage="production"):
     """
     Connect to the database.
     """
-    uri = "sqlite:///data.db"
+    if stage == "production":
+        uri = "sqlite:///data.db"
+    elif stage == "test":
+        uri = "sqlite:///test_data.db"
+        
     db = SQLDatabase.from_uri(uri)
     return db
 
