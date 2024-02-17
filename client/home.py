@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from utils import post, get_history, CACHE_TTL
 import os
 import pandas as pd
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 load_dotenv()
 st.title("Cashflow Assistant")
@@ -55,6 +56,11 @@ def display_output(role, response):
             st.markdown(response)
         elif type(response) == pd.DataFrame:
             st.dataframe(response)
+        elif isinstance(response, dict):
+            try:
+                exec(response["code"], None, {"df": response["data"]})
+            except Exception as e:
+                st.markdown("Please try again later")
 
 st.text_input('Please enter the ClientID', None, 
               disabled=st.session_state.disabled,

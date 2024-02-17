@@ -9,6 +9,17 @@ load_dotenv()
 CACHE_NUM_ENTRY = 1
 CACHE_TTL = 10
 
+def to_pandas(out):
+    if type(out) == list:
+        out = pd.DataFrame(out)
+    elif type(out) == dict:
+        out = pd.DataFrame.from_dict(out, orient="index")
+
+    for col in out.columns:
+        if out[col].dtype == "float64":
+            out[col] = out[col].round(0)
+
+    return out
 
 def process_output(out: str):
     # out = ast.literal_eval(str(out))
@@ -24,16 +35,12 @@ def process_output(out: str):
 
     try:
         out = ast.literal_eval(str(out))
-        if type(out) == list:
-            out = pd.DataFrame(out)
-        elif type(out) == dict:
-            out = pd.DataFrame.from_dict(out, orient="index")
-
-        # check each col, round if col is number
-        for col in out.columns:
-            print(out[col].dtype)
-            if out[col].dtype == "float64":
-                out[col] = out[col].round(0)
+        if isinstance(out, dict) and "code" in out:
+            out['data'] = to_pandas(out['data'])
+            out["code"] = "import streamlit as st\n\n"+ out["code"]
+            out["code"] = out["code"].replace("fig.show()", "st.plotly_chart(fig, use_container_width=True)")
+        else:
+            out = to_pandas(out)
     except Exception as e:
         pass
     return out

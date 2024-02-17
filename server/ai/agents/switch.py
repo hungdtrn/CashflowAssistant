@@ -30,6 +30,10 @@ prompt_infos = [
         'description': 'Good for questions about future prediction',
     },
     {
+        'name': 'data visualization',
+        'description': 'Good for questions about visualizing data'
+    },
+    {
         'name': 'general chat',
         'description': 'Good for general chat and questions',
     }

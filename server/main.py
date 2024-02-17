@@ -66,19 +66,20 @@ def chat():
         "content": query
     })
     ai = session["ai"]
+    output = ai.run(query)
 
-    def _fn(retries):
-        try:
-            output = ai.run(query)
-        except Exception as e:
-            if retries > 0:
-                return _fn(retries-1)
-            else:
-                output = "We encounter an error, please try again later."
-                print("Internal Error:", e)
-        return output
+    # def _fn(retries):
+    #     try:
+    #         output = ai.run(query)
+    #     except Exception as e:
+    #         if retries > 0:
+    #             return _fn(retries-1)
+    #         else:
+    #             output = "We encounter an error, please try again later."
+    #             print("Internal Error:", e)
+    #     return output
 
-    output = _fn(1)
+    # output = _fn(1)
     session["history"].append({
         "role": "assistant",
         "content": output
