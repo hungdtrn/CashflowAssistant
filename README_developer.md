@@ -3,7 +3,7 @@
 This AI system contains two servers: 
 - Streamlit front-end application server
 - Flask back-end server
-
+https://docs.google.com/presentation/d/14ksVlbg3tV1rETHpiqgD1U41WMcqrPBvExYm-WMfSF4/edit?usp=drivesdk
 ## Local installation and run the system
 
 ### Prerequisites
